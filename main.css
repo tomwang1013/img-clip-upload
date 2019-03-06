@@ -1,0 +1,24 @@
+.painter-wrapper {
+  position: relative;
+}
+
+.box {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #fff;
+  border: 1px solid #ffff00;
+}
+
+#tl, #br {
+  cursor: nwse-resize;
+}
+#tm, #bm {
+  cursor: ns-resize;
+}
+#tr, #bl {
+  cursor: nesw-resize;
+}
+#ml, #mr {
+  cursor: ew-resize;
+}

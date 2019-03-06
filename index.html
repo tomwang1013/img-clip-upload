@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>image clip and upload with canvas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+  <script src="main.js"></script>
+</head>
+<body>
+  <div>
+    <label for="file">请选择图片文件：</label>
+    <input type="file" accept="image/*" name="file" id="file">
+  </div>
+  <div class="painter-wrapper">
+    <canvas id="painter" width="300" height="300"></canvas>
+    <div class="box" id="tl"></div>
+    <div class="box" id="tm"></div>
+    <div class="box" id="tr"></div>
+    <div class="box" id="ml"></div>
+    <div class="box" id="mr"></div>
+    <div class="box" id="bl"></div>
+    <div class="box" id="bm"></div>
+    <div class="box" id="br"></div>
+  </div>
+</body>
+</html>
