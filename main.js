@@ -1,14 +1,11 @@
-let ctx, width, height, img, canvas, canvasPos
+let ctx, img
 let dashRect = { x: 0, y: 0, width: 0, height: 0 }
 let lastMousePos = { x: 0, y: 0 }
-let delta = { dx: 0, dy: 0 }
 const halfBoxSize = 3
 let clipping = false
 let target = ''
 
 document.addEventListener('DOMContentLoaded', function(e) {
-  init()
-
   document.getElementById('file').addEventListener('change', function(e) {
     onImgChange(this.files[0])
   })
@@ -26,52 +23,52 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
   painterWrapper.addEventListener('mousemove', function (e) {
     if (clipping) {
-      delta.dx = e.clientX - lastMousePos.x
-      delta.dy = e.clientY - lastMousePos.y
+      const dx = e.clientX - lastMousePos.x
+      const dy = e.clientY - lastMousePos.y
       lastMousePos.x = e.clientX
       lastMousePos.y = e.clientY
 
       switch (target) {
         case 'tl':
-          dashRect.x -= delta.dx
-          dashRect.width -= delta.dx
-          dashRect.y -= delta.dy
-          dashRect.height -= delta.dy
+          dashRect.x -= dx
+          dashRect.width -= dx
+          dashRect.y -= dy
+          dashRect.height -= dy
           break
 
         case 'tm':
-          dashRect.y += delta.dy
-          dashRect.height -= delta.dy
+          dashRect.y += dy
+          dashRect.height -= dy
           break
 
         case 'tr':
-          dashRect.width += delta.dx
-          dashRect.y += delta.dy
-          dashRect.height -= delta.dy
+          dashRect.width += dx
+          dashRect.y += dy
+          dashRect.height -= dy
           break
 
         case 'ml':
-          dashRect.x += delta.dx
-          dashRect.width -= delta.dx
+          dashRect.x += dx
+          dashRect.width -= dx
           break
 
         case 'mr':
-          dashRect.width += delta.dx
+          dashRect.width += dx
           break
 
         case 'bl':
-          dashRect.x += delta.dx
-          dashRect.width -= delta.dx
-          dashRect.height += delta.dy
+          dashRect.x += dx
+          dashRect.width -= dx
+          dashRect.height += dy
           break
 
         case 'bm':
-          dashRect.height += delta.dy
+          dashRect.height += dy
           break
 
         case 'br':
-          dashRect.width += delta.dx
-          dashRect.height += delta.dy
+          dashRect.width += dx
+          dashRect.height += dy
           break
       }
 
@@ -81,24 +78,24 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
   painterWrapper.addEventListener('mouseup', function (e) {
     clipping = false
+    target = ''
   })
 })
 
 function init() {
-  canvas = document.getElementById('painter')
-  width = canvas.width
-  height = canvas.height
-  canvasPos = canvas.getBoundingClientRect()
+  const canvas = document.getElementById('painter')
+  const canvasPos = canvas.getBoundingClientRect()
+
   ctx = canvas.getContext('2d')
   ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
   ctx.strokeStyle = '#ffff00'
   ctx.lineWidth = 2
   ctx.setLineDash([4, 4])
   dashRect = { 
-    x: width / 4, 
-    y: height / 4, 
-    width: width / 2, 
-    height: height / 2
+    x: canvasPos.width / 4, 
+    y: canvasPos.height / 4, 
+    width: canvasPos.width / 2, 
+    height: canvasPos.height / 2
   };
 
   ['tl', 'tm', 'tr', 'ml', 'mr', 'bl', 'bm', 'br'].forEach(element => {
@@ -110,11 +107,15 @@ function onImgChange(file) {
   img = document.createElement('img')
   img.src = URL.createObjectURL(file)
   img.onload = function() {
+    init()
     paint();
   }
 }
 
 function paint() {
+  const width = ctx.canvas.width
+  const height = ctx.canvas.height
+
   ctx.clearRect(0, 0, width, height)
 
   // image and shadow overlay
