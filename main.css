@@ -10,6 +10,14 @@
   border: 1px solid #ffff00;
 }
 
+.clip-area {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 2px dashed #ffff00;
+  cursor: move;
+}
+
 #tl, #br {
   cursor: nwse-resize;
 }
