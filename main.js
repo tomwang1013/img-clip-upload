@@ -1,8 +1,10 @@
 let ctx, width, height, img, canvas, canvasPos
 let dashRect = { x: 0, y: 0, width: 0, height: 0 }
-let mouseStart = { x: 0, y: 0 }
+let lastMousePos = { x: 0, y: 0 }
 let delta = { dx: 0, dy: 0 }
 const halfBoxSize = 3
+let clipping = false
+let target = ''
 
 document.addEventListener('DOMContentLoaded', function(e) {
   init()
@@ -14,19 +16,71 @@ document.addEventListener('DOMContentLoaded', function(e) {
   const painterWrapper = document.getElementsByClassName('painter-wrapper')[0]
 
   painterWrapper.addEventListener('mousedown', function (e) {
-    mouseStart.x = e.clientX;
-    mouseStart.y = e.clientY;
+    if (e.target.classList.contains('box')) {
+      lastMousePos.x = e.clientX
+      lastMousePos.y = e.clientY
+      clipping = true
+      target = e.target.getAttribute('id')
+    }
   })
 
   painterWrapper.addEventListener('mousemove', function (e) {
-    delta.dx = e.clientX - mouseStart.x
-    delta.dy = e.clientY - mouseStart.y
+    if (clipping) {
+      delta.dx = e.clientX - lastMousePos.x
+      delta.dy = e.clientY - lastMousePos.y
+      lastMousePos.x = e.clientX
+      lastMousePos.y = e.clientY
 
-    // TODO get new clip area and repaint
+      switch (target) {
+        case 'tl':
+          dashRect.x -= delta.dx
+          dashRect.width -= delta.dx
+          dashRect.y -= delta.dy
+          dashRect.height -= delta.dy
+          break
+
+        case 'tm':
+          dashRect.y += delta.dy
+          dashRect.height -= delta.dy
+          break
+
+        case 'tr':
+          dashRect.width += delta.dx
+          dashRect.y += delta.dy
+          dashRect.height -= delta.dy
+          break
+
+        case 'ml':
+          dashRect.x += delta.dx
+          dashRect.width -= delta.dx
+          break
+
+        case 'mr':
+          dashRect.width += delta.dx
+          break
+
+        case 'bl':
+          dashRect.x += delta.dx
+          dashRect.width -= delta.dx
+          dashRect.height += delta.dy
+          break
+
+        case 'bm':
+          dashRect.height += delta.dy
+          break
+
+        case 'br':
+          dashRect.width += delta.dx
+          dashRect.height += delta.dy
+          break
+      }
+
+      paint()
+    }
   })
 
   painterWrapper.addEventListener('mouseup', function (e) {
-
+    clipping = false
   })
 })
 
@@ -44,7 +98,7 @@ function init() {
     x: width / 4, 
     y: height / 4, 
     width: width / 2, 
-    height: height / 2 
+    height: height / 2
   };
 
   ['tl', 'tm', 'tr', 'ml', 'mr', 'bl', 'bm', 'br'].forEach(element => {
@@ -74,7 +128,9 @@ function paint() {
   ctx.lineTo(dashRect.x, dashRect.y)
   ctx.rect(dashRect.x, dashRect.y, dashRect.width, dashRect.height)
   ctx.lineTo(0, 0)
+  ctx.save()
   ctx.clip()
+  ctx.restore()
   ctx.fill()
   
   // clip area
