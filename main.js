@@ -1,11 +1,11 @@
-let ctx, img;
-let dashRect = { x: 0, y: 0, width: 0, height: 0 };
-let lastMousePos = { x: 0, y: 0 };
-const boxWidth = 6;
-const borderWidth = 2;
-let clipping = false;
-let moving = false;
-let target = '';
+var ctx, img;
+var dashRect = { x: 0, y: 0, width: 0, height: 0 };
+var lastMousePos = { x: 0, y: 0 };
+var boxWidth = 6;
+var borderWidth = 2;
+var clipping = false;
+var moving = false;
+var target = '';
 
 document.addEventListener('DOMContentLoaded', function(e) {
   init();
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     onImgChange(this.files[0]);
   })
 
-  const painterWrapper = document.getElementsByClassName('painter-wrapper')[0];
+  var painterWrapper = document.getElementsByClassName('painter-wrapper')[0];
 
   painterWrapper.addEventListener('dragstart', function() {
     return false;
@@ -43,10 +43,32 @@ document.addEventListener('DOMContentLoaded', function(e) {
     moving = false;
     target = '';
   });
+
+  // 上传裁减后的图片
+  document.getElementById('upload').addEventListener('click', function(e) {    
+    var clippedImgData = ctx.getImageData(dashRect.x, dashRect.y, dashRect.width, dashRect.height);
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = dashRect.width;
+    tmpCanvas.height = dashRect.height;
+    var tmpCtx = tmpCanvas.getContext('2d');
+    tmpCtx.putImageData(clippedImgData, 0, 0);
+
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://127.0.0.1:3000/upload', true);
+    xhr.onload = function(e) {
+      if (xhr.readyState === 4) {
+        document.getElementById('server-img').setAttribute('src', xhr.response);
+      }
+    };
+    tmpCanvas.toBlob(function (blob) {
+      xhr.send(blob);
+    });
+  })
 })
 
 function init() {
-  const canvas = document.getElementById('painter');
+  var canvas = document.getElementById('painter');
   ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
   
@@ -74,14 +96,14 @@ function onImgChange(file) {
 
 // drag and clip the wanted image fragment
 function clip(e) {
-  let dx = e.clientX - lastMousePos.x;
-  let dy = e.clientY - lastMousePos.y;
+  var dx = e.clientX - lastMousePos.x;
+  var dy = e.clientY - lastMousePos.y;
 
-  const minBoxWidth = boxWidth * 3;
-  const maxDx = dashRect.width - minBoxWidth;
-  const maxDy = dashRect.height - minBoxWidth;
-  const minDx = -maxDx;
-  const minDy = -maxDy;
+  var minBoxWidth = boxWidth * 3;
+  var maxDx = dashRect.width - minBoxWidth;
+  var maxDy = dashRect.height - minBoxWidth;
+  var minDx = -maxDx;
+  var minDy = -maxDy;
 
   lastMousePos.x = e.clientX;
   lastMousePos.y = e.clientY;
@@ -207,8 +229,8 @@ function clip(e) {
 
 // drag and move the clip area to pick the wanted image fragment
 function move(e) {
-  let dx = e.clientX - lastMousePos.x;
-  let dy = e.clientY - lastMousePos.y;
+  var dx = e.clientX - lastMousePos.x;
+  var dy = e.clientY - lastMousePos.y;
   lastMousePos.x = e.clientX;
   lastMousePos.y = e.clientY;
 
@@ -231,8 +253,8 @@ function move(e) {
 }
 
 function paint() {
-  const width = ctx.canvas.width;
-  const height = ctx.canvas.height;
+  var width = ctx.canvas.width;
+  var height = ctx.canvas.height;
 
   ctx.clearRect(0, 0, width, height);
 
@@ -253,15 +275,15 @@ function paint() {
   ctx.fill();
 
   // clip area
-  const x = dashRect.x;
-  const y = dashRect.y;
-  const w = dashRect.width;
-  const h = dashRect.height;
+  var x = dashRect.x;
+  var y = dashRect.y;
+  var w = dashRect.width;
+  var h = dashRect.height;
 
-  const a = (boxWidth - borderWidth) / 2;
-  const b = (w - boxWidth) / 2;
-  const c = (h - boxWidth) / 2;
-  const d = (boxWidth + borderWidth) / 2;
+  var a = (boxWidth - borderWidth) / 2;
+  var b = (w - boxWidth) / 2;
+  var c = (h - boxWidth) / 2;
+  var d = (boxWidth + borderWidth) / 2;
 
   setBoxPos(tl, { left: x - a, top: y - a });
   setBoxPos(tm, { left: x + b, top: y - a });

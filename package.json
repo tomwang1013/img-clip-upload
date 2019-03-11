@@ -1,0 +1,28 @@
+{
+  "name": "img-clip-upload",
+  "version": "1.0.0",
+  "description": "use canvas to clip and upload img",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomwang1013/img-clip-upload.git"
+  },
+  "keywords": [
+    "canvas",
+    "clip",
+    "upload"
+  ],
+  "author": "tomwang1013",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomwang1013/img-clip-upload/issues"
+  },
+  "homepage": "https://github.com/tomwang1013/img-clip-upload#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
