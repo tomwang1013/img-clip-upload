@@ -18,7 +18,7 @@ app.post('/upload', (req, res) => {
   res.append('Access-Control-Allow-Origin', '*')
   fs.writeFile('./public/upload.png', req.body, err => {
     res.append('Content-Type', 'text/plain')
-    res.send('http://127.0.0.1:3000/upload.png?_time' + Date.now())
+    res.send('http://127.0.0.1:3000/upload.png?_time=' + Date.now())
   })
 });
 
